@@ -113,14 +113,14 @@ public class SignatureServiceImpl extends BaseService implements SignatureServic
 		NodeAttr nodeAttr = new NodeAttr(node.getAppAttr());
 		if (nodeAttr.isNotUnsig())
 		{
-			log.info("no unsig");
+			log.info("node no unsig");
 			return true;
 		}
-		Signature sig = (Signature) Signature.SIGS.get(node.getSigBeanId());
+		Signature sig = Signature.SIGS.get(node.getSigBeanId());
 		if (sig == null)
 		{ // 找不到签名句柄时，不核签，默认核签成功, 可以利用此特性不对某成员测试环境时验证签名
-			log.warn("cannot find Signature for " + node + ", name:" + node.getSigBeanId()
-					+ ", default unsig is true!!!");
+			log.warn("cannot find Signature for " + node.getAppCd() + ", name:"
+					+ node.getSigBeanId() + ", default unsig is true!!!");
 			return true;
 		}
 		String unsigNodeCd = StringX.null2emptystr(node.getMbrCd()).trim()
@@ -153,14 +153,14 @@ public class SignatureServiceImpl extends BaseService implements SignatureServic
 					? new DefaultMsgSigContent()
 					: (MsgSigContent) MsgSigContent.SIG.get(node.getSigCntBeanId());
 			sigCnt = msgSigCnt.getSigCnts(msg, unsigNodeCd, sigCnts, charset); // 获取参与签名内容
-			if (log.isInfoEnabled()) log.info("sigCnt ele:[[" + StringX.base64(sigCnt));
+			if (log.isInfoEnabled()) log.info("sigCnt ele:" + new String(sigCnt, charset));
 		}
 		byte[] sigDigBytes = StringX.nullity(nodeAttr.getSigDigestAlg()) ? sigCnt
 				: StringX.digest(sigCnt, nodeAttr.getSigDigestAlg()).getBytes(); // 获取签名摘要
 		signature = signature.replaceAll("\t|\n|\\s", StringX.EMPTY_STRING); // 去掉signature中空格
 		if (log.isDebugEnabled())
 			log.debug("Unsig: sigCnt.base64:" + new String(StringX.encodeBase64(sigCnt))
-					+ ", sigDigBytes.base64:" + new String(StringX.encodeBase64(sigDigBytes)));
+					+ ", DigBytes.base64:" + new String(StringX.encodeBase64(sigDigBytes)));
 		// added by guodd 20120426
 		Map<String, Object> map = new HashMap<>();
 		map.put(ESBCommon.STRING_MSG, msg);
