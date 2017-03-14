@@ -1,0 +1,29 @@
+<sql>
+	<!-- for core msgDefService -->
+	<select id="mdschema" class="spc.esb.model.MsgSchemaPO">
+		select * from esb_msgschema where msgcd like '%MD' order by msgCd,seq
+	</select>
+	<select id="metadata" class="string">
+		select distinct msgcd from esb_msgschema where msgcd like '%MD'
+	</select>
+	<select id="msgstruct" class="spc.esb.model.MsgSchemaPO">
+		select * from esb_msgschema order by msgcd,seq
+	</select>
+	<select id="msglist" class="string">
+		select distinct msgcd from esb_msgschema 
+	</select>
+	<!-- for core msgDefService end -->
+
+	<!-- for ba msgDefService end -->
+	<select id="famsgstruct" class="spc.esb.model.MsgSchemaPO">
+		select seq,parentSeq,(sndappcd || '$' || msgcd)
+		msgcd,esbName,rcvName,ftyp,deci,
+		optional,encrypt,sig,fvMapId,cvtr,MINLEN,MAXLEN,cvtr,ftl,pattern,defvalue
+		from esb_famsgschema
+		order by msgCd,seq
+	</select>
+	<select id="famsglist" class="string">
+		select distinct (sndappcd || '$' ||
+		msgcd) from esb_famsgschema
+	</select>
+</sql>

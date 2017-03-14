@@ -1,0 +1,61 @@
+<#if type==0>
+<Envelope>
+	<Header>
+		<sndAppCd>ESB</sndAppCd>
+		<sndDt>20101010</sndDt>
+		<sndTm>090909</sndTm>
+		<seqNb>123456789000005</seqNb>
+		<msgCd>${msgCd}</msgCd>
+		<#if response>
+		<rcvAppCd>PMS</rcvAppCd>
+		<refMsgCd></refMsgCd>
+		<refSndAppCd>PMS</refSndAppCd>
+		<refSndDt>20101010</refSndDt>
+		<refSeqNb>123456789012345</refSeqNb>
+		<status>
+			<retCd>000000</retCd>
+			<location></location>
+			<appCd></appCd>
+			<desc></desc>
+			<ip>127.0.0.1</ip>
+			<traceNo></traceNo>
+		</status>
+		</#if>
+	</Header>
+	<Body>
+			${sample!('')}
+	</Body>
+</Envelope>
+</#if>
+<#if type==1>
+{
+	"Header":{
+		"sndAppCd":"",
+		"sndDt":"",
+		"sndTm":"",
+		"seqNb":"",
+		"msgCd:"${msgCd}"<#if response>,
+		"rcvAppCd":"",
+		"refMsgCd":"",
+		"refSndAppCd":"",
+		"refSndDt":"20101010",
+		"refSeqNb":"",
+		"status":{
+			"retCd":"",
+			"location":"",
+			"appCd":"",
+			"desc":"",
+			"ip":"",
+			"traceNo":""
+		}</#if>
+	},
+	"Body":{
+	${sample!('')}
+	}
+}
+</#if>
+<#if type==2>
+{
+	${sample!('')}
+}
+</#if>

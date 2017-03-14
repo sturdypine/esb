@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd"
+	default-lazy-init="false">
+
+	<context:component-scan base-package="spc.esb.common.service.impl" />
+	<context:component-scan base-package="spc.esb.endpoint" />
+
+	<bean id="esbSOAPConverter" class="spc.esb.data.converter.SOAPConverter"
+		p:soap="true" />
+	<bean id="esbXMLConverter" class="spc.esb.data.converter.SOAPConverter"
+		p:soap="false" />
+	<bean id="esbJSONConverter" class="spc.esb.data.converter.JSONConverter" />
+	<bean id="esbRestConverter" class="spc.esb.data.converter.JSONConverter"
+		p:bodyOnly="true" />
+
+	<bean id="esbJSCMsgConverter" class="spc.esb.converter.DefaultCoreMsgConverter">
+		<property name="converter">
+			<bean class="spc.esb.converter.JsonCallMsgConverter" />
+		</property>
+	</bean>
+
+	<bean id="esbService" class="spc.esb.core.service.impl.ESBServiceImpl"
+		p:uuid-ref="uuid" />
+	<bean id="esbCoreService" class="spc.esb.core.service.impl.CoreServiceImpl">
+		<property name="translator">
+			<bean class="spc.esb.data.util.MessageTranslator">
+				<property name="atomProcessor">
+					<bean class="spc.esb.converter.ESBAtomProcessor" />
+				</property>
+			</bean>
+		</property>
+	</bean>
+</beans>

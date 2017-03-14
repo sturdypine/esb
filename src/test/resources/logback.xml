@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<Encoding>UTF-8</Encoding>
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>[%d{MM-dd HH:mm:ss.SSS} %-5level %logger{30}] [%X{trace} %X{location}] - %msg%n</pattern>
+		</layout>
+	</appender>
+	
+	<logger name="spc" level="INFO" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger name="org.apache" level="WARN" additivity="false">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
