@@ -20,7 +20,7 @@ import spc.esb.data.util.Schema2SampleJsonTreeNodeVistor;
 import spc.esb.data.util.Schema2SampleXmlTreeNodeVistor;
 import spc.esb.model.MsgSchemaPO;
 import spc.esb.model.ServicePO;
-import spc.webos.persistence.jdbc.datasource.SwitchDynamicDS;
+import spc.webos.persistence.jdbc.datasource.SwitchDS;
 import spc.webos.service.BaseService;
 import spc.webos.util.FTLUtil;
 import spc.webos.util.FileUtil;
@@ -82,7 +82,7 @@ public class WsdlServiceImpl extends BaseService implements WsdlService
 	public void schema2java(String appCd, String category, String basePkg, String apiDir,
 			String implDir) throws Exception
 	{
-		try (SwitchDynamicDS ds = new SwitchDynamicDS(ESBCommon.ESB_DS))
+		try (SwitchDS ds = new SwitchDS(ESBCommon.ESB_DS))
 		{
 			ServicePO po = new ServicePO();
 			po.setAppCd(appCd);
@@ -136,7 +136,7 @@ public class WsdlServiceImpl extends BaseService implements WsdlService
 
 	public String schema2vo(String msgCd, String pkg) throws Exception
 	{
-		try (SwitchDynamicDS ds = new SwitchDynamicDS(ESBCommon.ESB_DS))
+		try (SwitchDS ds = new SwitchDS(ESBCommon.ESB_DS))
 		{
 			final StringBuilder str = new StringBuilder();
 			str.append("package " + pkg + ";\n");

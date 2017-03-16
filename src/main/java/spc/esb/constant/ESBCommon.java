@@ -10,7 +10,7 @@ public class ESBCommon
 {
 	// ´úÂë°æ±¾
 	public static final String VERSION = "6.0.1b";
-	public static final String VERSION_DATE = "20170315";
+	public static final String VERSION_DATE = "20170316";
 
 	public static String ESB_DS = "esbDS";
 	public static final String JMS_LOGPOINT = "LogPoint";

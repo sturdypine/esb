@@ -222,7 +222,7 @@ public class ESBServiceImpl extends BaseService implements ESBService
 				body = MessageUtil.getBody(StringX.decodeBase64(xmlbase64.getBytes()));
 			else log.warn("xml is null!!!");
 		}
-		boolean unsigOK = signatureService.unsig(msg, nodeVO, body, signature);
+		boolean unsigOK = signatureService.unsig(msg, nodeVO.getAppCd(), body, signature);
 		if (!unsigOK)
 		{ // 验证签名失败
 			log.warn("unsig: false, node:{}, sig:{}, original.base64:{}:", nodeVO, signature,
@@ -254,7 +254,7 @@ public class ESBServiceImpl extends BaseService implements ESBService
 			// 获取输入报文的byte[]
 			byte[] msgBytes = null;
 			byte[] body = MessageUtil.getBody(msgBytes);
-			String sigStr = signatureService.sig(msg, nodeVO, body);
+			String sigStr = signatureService.sig(msg, nodeVO.getAppCd(), body);
 			// modified by chenjs 2011-05-31 在不需要抽取签名信息时，直接用原输入对象输出，以提高性能
 			if (!StringX.nullity(sigStr))
 			{
@@ -271,7 +271,7 @@ public class ESBServiceImpl extends BaseService implements ESBService
 		else if (nodeAttr.isElementSig())
 		{ // 对内容签名
 			log.debug("sig by the element...");
-			String sigStr = signatureService.sig(msg, nodeVO, null);
+			String sigStr = signatureService.sig(msg, nodeVO.getAppCd(), null);
 			// modified by chenjs 2011-05-31 在不需要抽取签名信息时，直接用原输入对象输出，以提高性能
 			if (!StringX.nullity(sigStr))
 			{

@@ -25,7 +25,7 @@ import spc.esb.model.NodePO;
 import spc.esb.model.NodeServicePO;
 import spc.esb.model.ServicePO;
 import spc.webos.constant.Common;
-import spc.webos.persistence.jdbc.datasource.SwitchDynamicDS;
+import spc.webos.persistence.jdbc.datasource.SwitchDS;
 import spc.webos.service.BaseService;
 import spc.webos.util.StringX;
 import spc.webos.util.tree.ITreeCreator;
@@ -363,7 +363,7 @@ public class MsgDefServiceImpl extends BaseService implements MsgDefService
 	// 刷新CacheService的方法，重新从数据库中加载信息
 	public void refresh() throws Exception
 	{
-		try (SwitchDynamicDS ds = new SwitchDynamicDS(ESBCommon.ESB_DS))
+		try (SwitchDS ds = new SwitchDS(ESBCommon.ESB_DS))
 		{
 			log.info("refresh ds:{}, version:{}_{}", ESBCommon.ESB_DS, ESBCommon.VERSION,
 					ESBCommon.VERSION_DATE);

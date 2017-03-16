@@ -102,6 +102,6 @@
 	<classpathentry kind="lib" path="/Users/chenjs/software/webos/lib/zookeeper-3.4.9.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="/Users/chenjs/software/webos/lib/spc-webos-9.0.1-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="/portal/src/main/webapp/WEB-INF/lib/spc-webos-9.0.1-SNAPSHOT.jar" sourcepath="/webos/src"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

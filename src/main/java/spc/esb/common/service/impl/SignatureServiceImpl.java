@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import spc.esb.common.service.ESBInfoService;
 import spc.esb.common.service.MsgDefService;
 import spc.esb.common.service.SignatureService;
 import spc.esb.constant.ESBCommon;
@@ -34,10 +35,13 @@ public class SignatureServiceImpl extends BaseService implements SignatureServic
 {
 	@Autowired(required = false)
 	protected MsgDefService msgDefService;
+	@Autowired(required = false)
+	protected ESBInfoService esbInfoService;
 	protected String charset = Common.CHARSET_UTF8;
 
-	public String sig(IMessage msg, NodePO node, byte[] srcBytes) throws Exception
+	public String sig(IMessage msg, String nodeApp, byte[] srcBytes) throws Exception
 	{
+		NodePO node = esbInfoService.getNode(nodeApp);
 		NodeAttr nodeAttr = new NodeAttr(node.getAppAttr());
 		if (nodeAttr.isNotSig())
 		{
@@ -107,9 +111,10 @@ public class SignatureServiceImpl extends BaseService implements SignatureServic
 		return dsnv.getSigCnts();
 	}
 
-	public boolean unsig(IMessage msg, NodePO node, byte[] srcBytes, String signature)
+	public boolean unsig(IMessage msg, String nodeApp, byte[] srcBytes, String signature)
 			throws Exception
 	{
+		NodePO node = esbInfoService.getNode(nodeApp);
 		NodeAttr nodeAttr = new NodeAttr(node.getAppAttr());
 		if (nodeAttr.isNotUnsig())
 		{
@@ -182,6 +187,11 @@ public class SignatureServiceImpl extends BaseService implements SignatureServic
 	public void setMsgDefService(MsgDefService msgDefService)
 	{
 		this.msgDefService = msgDefService;
+	}
+
+	public void setEsbInfoService(ESBInfoService esbInfoService)
+	{
+		this.esbInfoService = esbInfoService;
 	}
 
 	public void setCharset(String charset)

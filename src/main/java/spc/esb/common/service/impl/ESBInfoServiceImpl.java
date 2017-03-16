@@ -18,7 +18,7 @@ import spc.esb.model.NodePO;
 import spc.esb.model.NodeServicePO;
 import spc.webos.endpoint.Endpoint;
 import spc.webos.endpoint.EndpointFactory;
-import spc.webos.persistence.jdbc.datasource.SwitchDynamicDS;
+import spc.webos.persistence.jdbc.datasource.SwitchDS;
 import spc.webos.service.BaseService;
 import spc.webos.util.StringX;
 
@@ -237,7 +237,7 @@ public class ESBInfoServiceImpl extends BaseService implements ESBInfoService
 	// 刷新CacheService的方法，重新从数据库中加载信息
 	public void refresh() throws Exception
 	{
-		try (SwitchDynamicDS ds = new SwitchDynamicDS(ESBCommon.ESB_DS))
+		try (SwitchDS ds = new SwitchDS(ESBCommon.ESB_DS))
 		{
 			log.info("refresh ds:{}", ESBCommon.ESB_DS);
 			Map uriPortIPNodeMap = new HashMap();
