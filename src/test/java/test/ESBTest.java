@@ -94,7 +94,7 @@ public class ESBTest
 	{
 		IMessage msg = msg();
 		IMessage response = esbService.sync(msg);
-		System.out.println(response);
+		System.out.println("response==\n" + response);
 	}
 
 	@Test
@@ -369,10 +369,10 @@ public class ESBTest
 		msg.setSndDt("20160922");
 		msg.setSndTm("090909009");
 
-		// msg.setInRequest("name", "xxPO");
-		// msg.setInRequest("map/name", "chenjs");
-		// msg.setInRequest("map/pwd", "pwd");
-		// msg.setInRequest("map/age", "22");
+		msg.setInRequest("name", "xxPO");
+		msg.setInRequest("map/name", "chenjs");
+		msg.setInRequest("map/pwd", "pwd");
+		msg.setInRequest("map/age", "22");
 
 		return msg;
 	}
