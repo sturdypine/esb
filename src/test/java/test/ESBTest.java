@@ -1,8 +1,10 @@
 package test;
 
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -394,6 +396,10 @@ public class ESBTest
 
 	public static void main(String[] args) throws Exception
 	{
+		List<Object> list = new ArrayList<>();
+		list.add(null);
+		System.out.println(list.size());
+		
 		System.out.println(StringX.str2xml(
 				"<?xml version=\"1.0\" encoding=\"utf-8\"?><PACKET><Head><SystemCode>BRH</SystemCode><FuncCode>BRH30</FuncCode><FuncName>鍊熸椤圭洰淇℃伅鎺ㄩ�佽姹�</FuncName><Operator>AB000001</Operator><TransDate>2017-01-11 11:17:53</TransDate></Head><Body><PlyNo>123</PlyNo><CavNo>456</CavNo><CheckResult>00</CheckResult></Body></PACKET>",
 				false));

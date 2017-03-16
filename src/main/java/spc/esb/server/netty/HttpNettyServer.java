@@ -157,27 +157,33 @@ public class HttpNettyServer extends AbstractNettyServer
 										fullHttpRequest.uri());
 								Map<String, List<String>> parameters = decoder.parameters();
 								if (parameters.containsKey("wsdl")) writeResponse(ctx.channel(),
-										wsdlService.wsdl(msgCd).getBytes(), 0);
+										wsdlService.wsdl(msgCd).getBytes(Common.CHARSET_UTF8), 0);
 								else if (parameters.containsKey("schema"))
 									writeResponse(ctx.channel(),
-											wsdlService.schema(msgCd).getBytes(), 0);
+											wsdlService.schema(msgCd).getBytes(Common.CHARSET_UTF8),
+											0);
 								else if (parameters.containsKey("xml")) writeResponse(ctx.channel(),
-										wsdlService.sample(msgCd, 0).getBytes(), 0);
+										wsdlService.sample(msgCd, 0).getBytes(Common.CHARSET_UTF8),
+										0);
 								else if (parameters.containsKey("json"))
 								{ // json sample
 									contentType = Common.FILE_JSON_CONTENTTYPE;
 									IMessage msg = SOAPConverter.getInstance()
-											.deserialize(wsdlService.sample(msgCd, 0).getBytes());
+											.deserialize(wsdlService.sample(msgCd, 0)
+													.getBytes(Common.CHARSET_UTF8));
 									writeResponse(ctx.channel(),
-											JsonUtil.obj2json(msg.getTransaction()).getBytes(), 0);
+											JsonUtil.obj2json(msg.getTransaction())
+													.getBytes(Common.CHARSET_UTF8),
+											0);
 								}
 								else if (parameters.containsKey("api"))
 								{ // json rest sample
 									contentType = Common.FILE_JSON_CONTENTTYPE;
 									IMessage msg = SOAPConverter.getInstance()
-											.deserialize(wsdlService.sample(msgCd, 0).getBytes());
-									writeResponse(ctx.channel(),
-											JsonUtil.obj2json(msg.getBody()).getBytes(), 0);
+											.deserialize(wsdlService.sample(msgCd, 0)
+													.getBytes(Common.CHARSET_UTF8));
+									writeResponse(ctx.channel(), JsonUtil.obj2json(msg.getBody())
+											.getBytes(Common.CHARSET_UTF8), 0);
 								}
 								else writeResponse(ctx.channel(),
 										"type not in (wsdl, schema, xml, json, api)".getBytes(),
