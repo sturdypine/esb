@@ -26,7 +26,6 @@ import spc.esb.data.AtomNode;
 import spc.esb.data.IMessage;
 import spc.esb.data.Message;
 import spc.esb.data.converter.SOAPConverter;
-import spc.esb.model.NodePO;
 import spc.webos.endpoint.Endpoint;
 import spc.webos.endpoint.EndpointFactory;
 import spc.webos.endpoint.Executable;
@@ -382,14 +381,9 @@ public class ESBTest
 	public void vo() throws Exception
 	{
 		String pkg = "com.brh";
-		String apiDir = "/Users/chenjs/workspace/brh-esb/cmis-api/src/main/java/";
-		String implDir = "/Users/chenjs/workspace/brh-esb/esb-cmis/src/main/java/";
-		wsdlService.schema2java("CMIS", null, pkg, apiDir, implDir);
-		// File file = new File(
-		// "/Users/chenjs/Downloads/" + pkg.replace('.', '/') +
-		// "/SSO00000001001.java");
-		// FileUtil.appendToFile(msgDefService.getVOClass("SSO.000000010.01",
-		// pkg).getBytes(), file);
+		String apiDir = "/Users/chenjs/Downloads/";
+		String implDir = "/Users/chenjs/Downloads/";
+		wsdlService.schema2java("PTP", null, pkg, apiDir, implDir);
 	}
 
 	public static void main(String[] args) throws Exception
