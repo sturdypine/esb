@@ -13,9 +13,7 @@ import spc.esb.common.service.JournalService;
 import spc.esb.common.service.MsgDefService;
 import spc.esb.common.service.SignatureService;
 import spc.esb.constant.ESBCommon;
-import spc.esb.constant.ESBMsgCode;
 import spc.esb.constant.ESBMsgLocalKey;
-import spc.esb.core.NodeAttr;
 import spc.esb.core.service.CoreService;
 import spc.esb.core.service.ESBService;
 import spc.esb.data.ICompositeNode;
@@ -25,11 +23,8 @@ import spc.esb.data.converter.CoreMessageConverter;
 import spc.esb.data.converter.MessageConverter;
 import spc.esb.data.converter.NodeConverterFactory;
 import spc.esb.data.converter.SOAPConverter;
-import spc.esb.data.util.MessageUtil;
 import spc.esb.model.MessagePO;
-import spc.esb.model.NodePO;
 import spc.webos.advice.log.LogTrace;
-import spc.webos.constant.AppRetCode;
 import spc.webos.endpoint.Endpoint;
 import spc.webos.endpoint.EndpointFactory;
 import spc.webos.endpoint.Executable;
@@ -110,7 +105,6 @@ public class ESBServiceImpl extends BaseService implements ESBService
 	{
 		log.info("request:{}", msg.getMsgSn());
 		log.debug("request start:{}", msg);
-		byte[] original = msg.getOriginalBytes();
 		CoreMessageConverter cmc = coreService.getCoreMsgConverter(msg, true, false);
 		if (cmc != null) cmc.app2esb(msg, true);
 		// 0:日志点
@@ -139,7 +133,6 @@ public class ESBServiceImpl extends BaseService implements ESBService
 	{
 		log.info("response:{}", msg.getRefMsgSn());
 		byte[] original = msg.getOriginalBytes();
-		String signature = msg.getSignature();
 
 		CoreMessageConverter cmc = coreService.getCoreMsgConverter(msg, false, true);
 		if (cmc != null) cmc.app2esb(msg, false);
@@ -204,91 +197,52 @@ public class ESBServiceImpl extends BaseService implements ESBService
 		msg.setSndTm(dt.substring(8, 17));
 	}
 
-	protected void unsig(IMessage msg, NodePO nodeVO, String signature, byte[] original)
-			throws Exception
-	{
-		NodeAttr nodeAttr = new NodeAttr(nodeVO.getAppAttr());
-		if (nodeAttr.isNotUnsig() || (!nodeAttr.isBodySig() && !nodeAttr.isElementSig()))
-		{ // added by chenjs 2011-06-02 如果节点sigmode不属于0/1则表示此节点不参与签名
-			log.info("sig mode is not in (0, 1) or is not usig");
-			return;
-		}
-
-		byte[] body = null; // 如果是基于body标签内容，则抽取原body标签内容信息
-		if (nodeAttr.isBodySig())
-		{ // 2012-06-12 chenjs SigPre中放入的是全报文
-			String xmlbase64 = null;
-			if (!StringX.nullity(xmlbase64))
-				body = MessageUtil.getBody(StringX.decodeBase64(xmlbase64.getBytes()));
-			else log.warn("xml is null!!!");
-		}
-		boolean unsigOK = signatureService.unsig(msg, nodeVO.getAppCd(), body, signature);
-		if (!unsigOK)
-		{ // 验证签名失败
-			log.warn("unsig: false, node:{}, sig:{}, original.base64:{}:", nodeVO, signature,
-					StringX.base64(original));
-			AppException ae = new AppException(AppRetCode.SIG_DECODE,
-					new String[] { StringX.null2emptystr(msg.getSndApp()) });
-			if (!msg.isRequestMsg())
-			{
-				msg.setMsgCd(ESBMsgCode.MSGCD_REQERR());
-				Status status = SpringUtil.ex2status(msg.getFixedErrDesc(), ae);
-				msg.setStatus(status);
-			}
-			else throw ae;
-		}
-	}
-
-	protected String sig(IMessage msg, NodePO nodeVO, String signature, byte[] original)
-			throws Exception
-	{
-		NodeAttr nodeAttr = new NodeAttr(nodeVO.getAppAttr());
-		if (nodeAttr.isNotSig())
-		{ // 当前接收节点不需要加签
-			log.info("not sig!!!");
-			return null;
-		}
-		else if (nodeAttr.isBodySig())
-		{ // 对报文体body签名
-			log.debug("sig by body...");
-			// 获取输入报文的byte[]
-			byte[] msgBytes = null;
-			byte[] body = MessageUtil.getBody(msgBytes);
-			String sigStr = signatureService.sig(msg, nodeVO.getAppCd(), body);
-			// modified by chenjs 2011-05-31 在不需要抽取签名信息时，直接用原输入对象输出，以提高性能
-			if (!StringX.nullity(sigStr))
-			{
-				if (log.isInfoEnabled()) log.info("sig by body, sig:[" + sigStr + "]");
-				byte[] afterSigXML = MessageUtil.addSignature2(msgBytes, sigStr.getBytes());
-				if (log.isDebugEnabled()) log.debug(
-						"afterSigXML.base64:" + new String(StringX.decodeBase64(afterSigXML)));
-			}
-			else
-			{
-				log.info("sig by body, sigStr is empty!!!");
-			}
-		}
-		else if (nodeAttr.isElementSig())
-		{ // 对内容签名
-			log.debug("sig by the element...");
-			String sigStr = signatureService.sig(msg, nodeVO.getAppCd(), null);
-			// modified by chenjs 2011-05-31 在不需要抽取签名信息时，直接用原输入对象输出，以提高性能
-			if (!StringX.nullity(sigStr))
-			{
-				if (log.isInfoEnabled()) log.info("sig by ele, sig:[" + sigStr + "]");
-				msg.setSignature(sigStr);
-			}
-			else
-			{
-				log.info("sig by ele, sigStr is empty!!!");
-			}
-		}
-		else
-		{ // added by chenjs 2011-06-02 如果节点配置签名模式不为0/1则表示此系统不支持签名
-			log.info("sig mode is not in (0, 1)");
-		}
-		return null;
-	}
+	/*
+	 * protected void unsig(IMessage msg, NodePO nodeVO, String signature,
+	 * byte[] original) throws Exception { NodeAttr nodeAttr = new
+	 * NodeAttr(nodeVO.getAppAttr()); if (nodeAttr.isNotUnsig() ||
+	 * (!nodeAttr.isBodySig() && !nodeAttr.isElementSig())) { // added by chenjs
+	 * 2011-06-02 如果节点sigmode不属于0/1则表示此节点不参与签名
+	 * log.info("sig mode is not in (0, 1) or is not usig"); return; }
+	 * 
+	 * byte[] body = null; // 如果是基于body标签内容，则抽取原body标签内容信息 if
+	 * (nodeAttr.isBodySig()) { // 2012-06-12 chenjs SigPre中放入的是全报文 String
+	 * xmlbase64 = null; if (!StringX.nullity(xmlbase64)) body =
+	 * MessageUtil.getBody(StringX.decodeBase64(xmlbase64.getBytes())); else
+	 * log.warn("xml is null!!!"); } boolean unsigOK =
+	 * signatureService.unsig(msg, nodeVO.getAppCd(), body, signature); if
+	 * (!unsigOK) { // 验证签名失败
+	 * log.warn("unsig: false, node:{}, sig:{}, original.base64:{}:", nodeVO,
+	 * signature, StringX.base64(original)); AppException ae = new
+	 * AppException(AppRetCode.SIG_DECODE, new String[] {
+	 * StringX.null2emptystr(msg.getSndApp()) }); if (!msg.isRequestMsg()) {
+	 * msg.setMsgCd(ESBMsgCode.MSGCD_REQERR()); Status status =
+	 * SpringUtil.ex2status(msg.getFixedErrDesc(), ae); msg.setStatus(status); }
+	 * else throw ae; } }
+	 * 
+	 * protected String sig(IMessage msg, NodePO nodeVO, String signature,
+	 * byte[] original) throws Exception { NodeAttr nodeAttr = new
+	 * NodeAttr(nodeVO.getAppAttr()); if (nodeAttr.isNotSig()) { // 当前接收节点不需要加签
+	 * log.info("not sig!!!"); return null; } else if (nodeAttr.isBodySig()) {
+	 * // 对报文体body签名 log.debug("sig by body..."); // 获取输入报文的byte[] byte[]
+	 * msgBytes = null; byte[] body = MessageUtil.getBody(msgBytes); String
+	 * sigStr = signatureService.sig(msg, nodeVO.getAppCd(), body); // modified
+	 * by chenjs 2011-05-31 在不需要抽取签名信息时，直接用原输入对象输出，以提高性能 if
+	 * (!StringX.nullity(sigStr)) { if (log.isInfoEnabled())
+	 * log.info("sig by body, sig:[" + sigStr + "]"); byte[] afterSigXML =
+	 * MessageUtil.addSignature2(msgBytes, sigStr.getBytes()); if
+	 * (log.isDebugEnabled()) log.debug( "afterSigXML.base64:" + new
+	 * String(StringX.decodeBase64(afterSigXML))); } else {
+	 * log.info("sig by body, sigStr is empty!!!"); } } else if
+	 * (nodeAttr.isElementSig()) { // 对内容签名 log.debug("sig by the element...");
+	 * String sigStr = signatureService.sig(msg, nodeVO.getAppCd(), null); //
+	 * modified by chenjs 2011-05-31 在不需要抽取签名信息时，直接用原输入对象输出，以提高性能 if
+	 * (!StringX.nullity(sigStr)) { if (log.isInfoEnabled())
+	 * log.info("sig by ele, sig:[" + sigStr + "]"); msg.setSignature(sigStr); }
+	 * else { log.info("sig by ele, sigStr is empty!!!"); } } else { // added by
+	 * chenjs 2011-06-02 如果节点配置签名模式不为0/1则表示此系统不支持签名
+	 * log.info("sig mode is not in (0, 1)"); } return null; }
+	 */
 
 	@Resource
 	protected UUID uuid;

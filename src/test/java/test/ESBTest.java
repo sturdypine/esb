@@ -95,6 +95,7 @@ public class ESBTest
 		IMessage msg = msg();
 		IMessage response = esbService.sync(msg);
 		System.out.println("response==\n" + response);
+		Thread.sleep(3000l);
 	}
 
 	@Test
