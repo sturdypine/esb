@@ -13,7 +13,7 @@ public class ESBClientTest {
 	@Test
 	public void http_soap() throws Exception {
 		IMessage msg = msg();
-		try (HttpEndpoint http = new HttpEndpoint("http://10.211.17.33:9111/ws/" + msg.getMsgCd())) {
+		try (HttpEndpoint http = new HttpEndpoint("http://127.0.0.1:9111/ws/" + msg.getMsgCd())) {
 			msg.setHeader(null);
 			Executable exe = new Executable();
 			exe.reqHttpHeaders = new HashMap<>();
