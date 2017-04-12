@@ -45,11 +45,9 @@
 	<classpathentry kind="lib" path="/webos/lib/curator-client-2.11.0.jar"/>
 	<classpathentry kind="lib" path="/webos/lib/curator-framework-2.11.0.jar"/>
 	<classpathentry kind="lib" path="/webos/lib/curator-recipes-2.11.0.jar"/>
-	<classpathentry kind="lib" path="/webos/lib/derbyclient-10.12.1.1.jar"/>
 	<classpathentry kind="lib" path="/webos/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="/webos/lib/druid-1.0.23.jar"/>
 	<classpathentry kind="lib" path="/webos/lib/dubbo-2.5.3.1.jar"/>
-	<classpathentry kind="lib" path="/webos/lib/ehcache-3.2.0.jar"/>
 	<classpathentry kind="lib" path="/webos/lib/fastjson-1.2.3.jar"/>
 	<classpathentry kind="lib" path="/webos/lib/freemarker-2.3.23.jar"/>
 	<classpathentry kind="lib" path="/webos/lib/fst-2.48.jar"/>
